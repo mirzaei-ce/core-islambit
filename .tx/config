@@ -1,0 +1,7 @@
+[main]
+host = https://www.transifex.com
+
+[islambit.qt-translation-012x]
+file_filter = src/qt/locale/islambit_<lang>.ts
+source_file = src/qt/locale/islambit_en.ts
+source_lang = en

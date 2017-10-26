@@ -1,0 +1,6 @@
+usr/local/bin/islambit-qt usr/bin
+share/pixmaps/islambit32.xpm usr/share/pixmaps
+share/pixmaps/islambit16.xpm usr/share/pixmaps
+share/pixmaps/islambit128.png usr/share/pixmaps
+debian/islambit-qt.desktop usr/share/applications
+debian/islambit-qt.protocol usr/share/kde4/services/

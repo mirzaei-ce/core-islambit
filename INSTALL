@@ -1,0 +1,5 @@
+Building Islambit
+
+See doc/build-*.md for instructions on building islambitd,
+the intended-for-services, no-graphical-interface, reference
+implementation of Islambit.

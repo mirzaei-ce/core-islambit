@@ -1,0 +1,12 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Islambit
+Comment=Islambit P2P Cryptocurrency
+Comment[fr]=Islambit, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Islambit, eşten eşe kriptografik sanal para birimi
+Exec=islambit-qt %u
+Terminal=false
+Type=Application
+Icon=islambit128
+MimeType=x-scheme-handler/islambit;
+Categories=Office;Finance;

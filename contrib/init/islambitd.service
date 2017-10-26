@@ -1,0 +1,22 @@
+[Unit]
+Description=Islambit's distributed currency daemon
+After=network.target
+
+[Service]
+User=islambit
+Group=islambit
+
+Type=forking
+PIDFile=/var/lib/islambitd/islambitd.pid
+ExecStart=/usr/bin/islambitd -daemon -pid=/var/lib/islambitd/islambitd.pid \
+-conf=/etc/islambit/islambit.conf -datadir=/var/lib/islambitd -disablewallet
+
+Restart=always
+PrivateTmp=true
+TimeoutStopSec=60s
+TimeoutStartSec=2s
+StartLimitInterval=120s
+StartLimitBurst=5
+
+[Install]
+WantedBy=multi-user.target

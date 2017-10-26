@@ -1,0 +1,33 @@
+# /etc/conf.d/islambitd: config file for /etc/init.d/islambitd
+
+# Config file location
+#ISLAMBITD_CONFIGFILE="/etc/islambit/islambit.conf"
+
+# What directory to write pidfile to?  (created and owned by $ISLAMBITD_USER)
+#ISLAMBITD_PIDDIR="/var/run/islambitd"
+
+# What filename to give the pidfile
+#ISLAMBITD_PIDFILE="${ISLAMBITD_PIDDIR}/islambitd.pid"
+
+# Where to write islambitd data (be mindful that the blockchain is large)
+#ISLAMBITD_DATADIR="/var/lib/islambitd"
+
+# User and group to own islambitd process
+#ISLAMBITD_USER="islambit"
+#ISLAMBITD_GROUP="islambit"
+
+# Path to islambitd executable
+#ISLAMBITD_BIN="/usr/bin/islambitd"
+
+# Nice value to run islambitd under
+#ISLAMBITD_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+ISLAMBITD_OPTS="-disablewallet"
+
+# The timeout in seconds OpenRC will wait for islambitd to terminate
+# after a SIGTERM has been raised.
+# Note that this will be mapped as argument to start-stop-daemon's
+# '--retry' option, which means you can specify a retry schedule
+# here. For more information see man 8 start-stop-daemon.
+ISLAMBITD_SIGTERM_TIMEOUT=60

@@ -1,0 +1,92 @@
+#!/sbin/runscript
+
+# backward compatibility for existing gentoo layout 
+#
+if [ -d "/var/lib/islambit/.islambit" ]; then
+	ISLAMBITD_DEFAULT_DATADIR="/var/lib/islambit/.islambit"
+else
+	ISLAMBITD_DEFAULT_DATADIR="/var/lib/islambitd"
+fi
+
+ISLAMBITD_CONFIGFILE=${ISLAMBITD_CONFIGFILE:-/etc/islambit/islambit.conf}
+ISLAMBITD_PIDDIR=${ISLAMBITD_PIDDIR:-/var/run/islambitd}
+ISLAMBITD_PIDFILE=${ISLAMBITD_PIDFILE:-${ISLAMBITD_PIDDIR}/islambitd.pid}
+ISLAMBITD_DATADIR=${ISLAMBITD_DATADIR:-${ISLAMBITD_DEFAULT_DATADIR}}
+ISLAMBITD_USER=${ISLAMBITD_USER:-${ISLAMBIT_USER:-islambit}}
+ISLAMBITD_GROUP=${ISLAMBITD_GROUP:-islambit}
+ISLAMBITD_BIN=${ISLAMBITD_BIN:-/usr/bin/islambitd}
+ISLAMBITD_NICE=${ISLAMBITD_NICE:-${NICELEVEL:-0}}
+ISLAMBITD_OPTS="${ISLAMBITD_OPTS:-${ISLAMBIT_OPTS}}"
+
+name="Islambit Core Daemon"
+description="Islambit cryptocurrency P2P network daemon"
+
+command="/usr/bin/islambitd"
+command_args="-pid=\"${ISLAMBITD_PIDFILE}\" \
+		-conf=\"${ISLAMBITD_CONFIGFILE}\" \
+		-datadir=\"${ISLAMBITD_DATADIR}\" \
+		-daemon \
+		${ISLAMBITD_OPTS}"
+
+required_files="${ISLAMBITD_CONFIGFILE}"
+start_stop_daemon_args="-u ${ISLAMBITD_USER} \
+			-N ${ISLAMBITD_NICE} -w 2000"
+pidfile="${ISLAMBITD_PIDFILE}"
+
+# The retry schedule to use when stopping the daemon. Could be either
+# a timeout in seconds or multiple signal/timeout pairs (like
+# "SIGKILL/180 SIGTERM/300")
+retry="${ISLAMBITD_SIGTERM_TIMEOUT}"
+
+depend() {
+	need localmount net
+}
+
+# verify
+# 1) that the datadir exists and is writable (or create it)
+# 2) that a directory for the pid exists and is writable
+# 3) ownership and permissions on the config file
+start_pre() {
+	checkpath \
+	-d \
+	--mode 0750 \
+	--owner "${ISLAMBITD_USER}:${ISLAMBITD_GROUP}" \
+	"${ISLAMBITD_DATADIR}"
+
+	checkpath \
+	-d \
+	--mode 0755 \
+	--owner "${ISLAMBITD_USER}:${ISLAMBITD_GROUP}" \
+	"${ISLAMBITD_PIDDIR}"
+
+	checkpath -f \
+	-o ${ISLAMBITD_USER}:${ISLAMBITD_GROUP} \
+	-m 0660 \
+	${ISLAMBITD_CONFIGFILE}
+
+	checkconfig || return 1
+}
+
+checkconfig()
+{
+	if ! grep -qs '^rpcpassword=' "${ISLAMBITD_CONFIGFILE}" ; then
+		eerror ""
+		eerror "ERROR: You must set a secure rpcpassword to run islambitd."
+		eerror "The setting must appear in ${ISLAMBITD_CONFIGFILE}"
+		eerror ""
+		eerror "This password is security critical to securing wallets "
+		eerror "and must not be the same as the rpcuser setting."
+		eerror "You can generate a suitable random password using the following"
+		eerror "command from the shell:"
+		eerror ""
+		eerror "bash -c 'tr -dc a-zA-Z0-9 < /dev/urandom | head -c32 && echo'"
+		eerror ""
+		eerror "It is also recommended that you also set alertnotify so you are "
+		eerror "notified of problems:"
+		eerror ""
+		eerror "ie: alertnotify=echo %%s | mail -s \"Islambit Alert\"" \
+			"admin@foo.com"
+		eerror ""
+		return 1
+	fi
+}
